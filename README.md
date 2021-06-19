@@ -1,11 +1,13 @@
 # gologin
 Simple Go Login using Fiber , Gorm-Postgres
 
-#how to run 
+# how to run 
 
-// ------ you only need this step if you dont have postgresql ----//
+// ------ skip this step if you already have postgresql ----//
+
 - Install docker
 - run docker command : docker run --name mac-postgres -e POSTGRES_PASSWORD='Postgres123!@#' -d -p 5432:5432 postgres 
+
 // --------------------------------------------------------------------//
 - go mod init github.com/creamyshit/gologin
 - go mod tidy
