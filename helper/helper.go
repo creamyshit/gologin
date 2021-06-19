@@ -18,7 +18,7 @@ type authResponse struct {
 	SessionToken string      `json:"sessiontoken"`
 }
 
-func AuthResponse(c fiber.Ctx, success bool, data interface{}, message string, code int, token string) error {
+func AuthResponse(c *fiber.Ctx, success bool, data interface{}, message string, code int, token string) error {
 	return c.Status(code).JSON(&authResponse{
 		Success:      success,
 		Result:       data,

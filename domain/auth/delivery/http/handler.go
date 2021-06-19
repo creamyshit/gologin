@@ -2,6 +2,7 @@ package http
 
 import (
 	"github.com/creamyshit/gologin/domain/auth"
+	"github.com/creamyshit/gologin/helper"
 
 	"github.com/gofiber/fiber/v2"
 )
@@ -31,16 +32,10 @@ func (a *Handler) Signin(c *fiber.Ctx) error {
 	res, err := a.AuthUsecase.Signin(payload)
 
 	if err != nil {
-		return c.JSON(&fiber.Map{
-			"success": true,
-			"return":  err.Error(),
-		})
+		return helper.AuthResponse(c, false, err.Error(), "your custom msg here", 400, "")
 	}
 
-	return c.JSON(&fiber.Map{
-		"success": true,
-		"return":  res,
-	})
+	return helper.AuthResponse(c, true, res, "your custom msg here", 200, "")
 }
 
 func (a *Handler) SignUp(c *fiber.Ctx) error {
@@ -53,8 +48,5 @@ func (a *Handler) SignUp(c *fiber.Ctx) error {
 
 	res, err := a.AuthUsecase.Signup(payload)
 
-	return c.JSON(&fiber.Map{
-		"success": true,
-		"return":  res,
-	})
+	return helper.AuthResponse(c, true, res, "your custom msg here", 200, "")
 }

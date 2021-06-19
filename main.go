@@ -1,9 +1,12 @@
 package main
 
 import (
+	"fmt"
+
 	_authHttpDeliver "github.com/creamyshit/gologin/domain/auth/delivery/http"
 	_authRepo "github.com/creamyshit/gologin/domain/auth/repository"
 	_authUcase "github.com/creamyshit/gologin/domain/auth/usecase"
+	"github.com/creamyshit/gologin/model"
 
 	"github.com/gofiber/fiber/v2"
 	"gorm.io/driver/postgres"
@@ -15,6 +18,9 @@ func main() {
 
 	dsn := "host=localhost user=postgres password=Postgres123!@# dbname=pos port=5432 sslmode=disable TimeZone=Asia/Jakarta"
 	db, _ := gorm.Open(postgres.Open(dsn), &gorm.Config{})
+
+	fmt.Println("Start Migration ...")
+	db.AutoMigrate(&model.User{})
 
 	ar := _authRepo.AuthRepository(db)
 	au := _authUcase.AuthUsecase(ar)

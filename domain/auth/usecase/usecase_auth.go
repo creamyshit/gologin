@@ -67,5 +67,5 @@ func (a *Usecase) Signup(signup *auth.SignUpPayload) (*model.User, error) {
 
 	res, err := a.authRepo.Signup(udata)
 
-	return res, nil
+	return helper.HideCredential(res), nil
 }
