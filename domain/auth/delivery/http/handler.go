@@ -3,7 +3,7 @@ package http
 import (
 	"github.com/creamyshit/gologin/domain/auth"
 	"github.com/creamyshit/gologin/helper"
-
+	"github.com/go-playground/validator/v10"
 	"github.com/gofiber/fiber/v2"
 )
 
@@ -26,7 +26,14 @@ func (a *Handler) Signin(c *fiber.Ctx) error {
 	err := c.BodyParser(payload)
 
 	if err != nil {
-		return err
+		return helper.AuthResponse(c, false, err.Error(), "your custom msg here", 400, "")
+	}
+
+	validation := validator.New()
+	err = validation.Struct(payload)
+
+	if err != nil {
+		return helper.AuthResponse(c, false, err.Error(), "your custom msg here", 400, "")
 	}
 
 	res, err := a.AuthUsecase.Signin(payload)
@@ -46,7 +53,18 @@ func (a *Handler) SignUp(c *fiber.Ctx) error {
 		return err
 	}
 
+	validation := validator.New()
+	err = validation.Struct(payload)
+
+	if err != nil {
+		return helper.AuthResponse(c, false, err.Error(), "your custom msg here", 400, "")
+	}
+
 	res, err := a.AuthUsecase.Signup(payload)
+
+	if err != nil {
+		return helper.AuthResponse(c, false, err.Error(), "your custom msg here", 400, "")
+	}
 
 	return helper.AuthResponse(c, true, res, "your custom msg here", 200, "")
 }
