@@ -3,10 +3,10 @@ package main
 import (
 	"fmt"
 
-	_authHttpDeliver "github.com/creamyshit/gologin/domain/auth/delivery/http"
-	_authRepo "github.com/creamyshit/gologin/domain/auth/repository"
-	_authUcase "github.com/creamyshit/gologin/domain/auth/usecase"
-	"github.com/creamyshit/gologin/model"
+	_entity "github.com/creamyshit/gologin/app/entity"
+	_handler "github.com/creamyshit/gologin/app/handler/http"
+	_repo "github.com/creamyshit/gologin/app/repository"
+	"github.com/creamyshit/gologin/domain"
 
 	"github.com/gofiber/fiber/v2"
 	"gorm.io/driver/postgres"
@@ -20,12 +20,12 @@ func main() {
 	db, _ := gorm.Open(postgres.Open(dsn), &gorm.Config{})
 
 	fmt.Println("Start Migration ...")
-	db.AutoMigrate(&model.User{})
+	db.AutoMigrate(&domain.Auth{})
 
-	ar := _authRepo.AuthRepository(db)
-	au := _authUcase.AuthUsecase(ar)
+	ar := _repo.NewAuthRepository(db)
+	au := _entity.NewAuthEntity(ar)
 
-	_authHttpDeliver.AuthHandler(app, au)
+	_handler.AuthHandler(app, au)
 
 	app.Listen(":3000")
 }

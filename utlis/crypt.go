@@ -1,36 +1,10 @@
-package helper
+package utils
 
 import (
 	"crypto/rand"
 	"crypto/sha512"
 	"encoding/base64"
-	"time"
-
-	"github.com/creamyshit/gologin/model"
-
-	"github.com/gofiber/fiber/v2"
 )
-
-type authResponse struct {
-	Result       interface{} `json:"result"`
-	Message      string      `json:"message"`
-	Success      bool        `json:"success"`
-	SessionToken string      `json:"sessiontoken"`
-}
-
-func AuthResponse(c *fiber.Ctx, success bool, data interface{}, message string, code int, token string) error {
-	return c.Status(code).JSON(&authResponse{
-		Success:      success,
-		Result:       data,
-		Message:      message,
-		SessionToken: token,
-	})
-}
-
-func subtractTime(time1, time2 time.Time) float64 {
-	diff := time2.Sub(time1).Seconds()
-	return diff
-}
 
 // Define salt size
 const saltSize = 16
@@ -81,10 +55,4 @@ func DoPasswordsMatch(hashedPassword, currPassword string,
 	var currPasswordHash = HashPassword(currPassword, salt)
 
 	return hashedPassword == currPasswordHash
-}
-
-func HideCredential(a *model.User) *model.User {
-	a.Password = ""
-	a.Salt = nil
-	return a
 }

@@ -1,29 +1,28 @@
-package usecase
+package entity
 
 import (
 	"errors"
 
-	"github.com/creamyshit/gologin/domain/auth"
-	"github.com/creamyshit/gologin/helper"
-	"github.com/creamyshit/gologin/model"
+	"github.com/creamyshit/gologin/domain"
+	"github.com/creamyshit/gologin/utils"
 
 	"github.com/google/uuid"
 )
 
-type Usecase struct {
-	authRepo auth.Repository
+type AuthEntity struct {
+	authRepo domain.AuthRepository
 }
 
-func AuthUsecase(a auth.Repository) auth.Usecase {
-	return &Usecase{
+func NewAuthEntity(a domain.AuthRepository) domain.AuthEntity {
+	return &AuthEntity{
 		authRepo: a,
 	}
 }
 
-func (a *Usecase) Signin(signin *auth.SignUpPayload) (*model.User, error) {
+func (a *AuthEntity) Signin(signin *domain.SignUpPayload) (*domain.Auth, error) {
 
 	//store signin credential <username> into user model struct
-	loginData := &model.User{
+	loginData := &domain.Auth{
 		Username: signin.Username,
 	}
 
@@ -36,7 +35,7 @@ func (a *Usecase) Signin(signin *auth.SignUpPayload) (*model.User, error) {
 	}
 
 	//if user found , check stored hashedpassword with signin credential password
-	passMatch := helper.DoPasswordsMatch(res.Password, signin.Password, res.Salt)
+	passMatch := utils.DoPasswordsMatch(res.Password, signin.Password, res.Salt)
 
 	//if both password not same will return error
 	if !passMatch {
@@ -45,10 +44,10 @@ func (a *Usecase) Signin(signin *auth.SignUpPayload) (*model.User, error) {
 
 	//if both password match return fulldb result data
 	//hidecredential used for reassign credential data into empty
-	return helper.HideCredential(res), nil
+	return utils.HideCredential(res), nil
 }
 
-func (a *Usecase) Signup(signup *auth.SignUpPayload) (*model.User, error) {
+func (a *AuthEntity) Signup(signup *domain.SignUpPayload) (*domain.Auth, error) {
 
 	uuID, err := uuid.NewRandom()
 
@@ -56,16 +55,16 @@ func (a *Usecase) Signup(signup *auth.SignUpPayload) (*model.User, error) {
 		return nil, err
 	}
 
-	salt := helper.GenerateRandomSalt(16)
+	salt := utils.GenerateRandomSalt(16)
 
-	udata := &model.User{
-		Userid:   uuID,
+	udata := &domain.Auth{
+		Id:       uuID,
 		Username: signup.Username,
-		Password: helper.HashPassword(signup.Password, salt),
+		Password: utils.HashPassword(signup.Password, salt),
 		Salt:     salt,
 	}
 
 	res, err := a.authRepo.Signup(udata)
 
-	return helper.HideCredential(res), nil
+	return utils.HideCredential(res), nil
 }
