@@ -5,7 +5,6 @@ import (
 
 	"github.com/creamyshit/gologin/domain"
 	"github.com/creamyshit/gologin/utils"
-
 	"github.com/google/uuid"
 )
 

@@ -24,7 +24,7 @@ func (m *AuthRepository) Signup(a *domain.Auth) (*domain.Auth, error) {
 	return a, nil
 }
 
-func (m *Repository) Signin(a *domain.Auth) (*domain.Auth, error) {
+func (m *AuthRepository) Signin(a *domain.Auth) (*domain.Auth, error) {
 
 	if err := m.conn.Where("username = ?", a.Username).First(&a); err != nil {
 		return nil, err.Error
