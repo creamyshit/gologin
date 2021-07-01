@@ -1,32 +1,49 @@
-package entity
+package usecase
 
 import (
 	"errors"
 
 	"github.com/creamyshit/gologin/domain"
+	"github.com/creamyshit/gologin/src/model"
 	"github.com/creamyshit/gologin/utils"
 	"github.com/google/uuid"
 )
 
-type AuthEntity struct {
+type AuthUsecase struct {
 	authRepo domain.AuthRepository
 }
 
-func NewAuthEntity(a domain.AuthRepository) domain.AuthEntity {
-	return &AuthEntity{
+func NewAuthUsecase(a domain.AuthRepository) domain.AuthUsecase {
+	return &AuthUsecase{
 		authRepo: a,
 	}
 }
 
-func (a *AuthEntity) Signin(signin *domain.SignUpPayload) (*domain.Auth, error) {
+func (a *AuthUsecase) ForgotPassword(forgot *model.ForgotPasswordPayload) (bool, error) {
+
+	loginData := &model.Auth{
+		Username: forgot.Username,
+	}
+
+	//find signin credential in user table db
+	_, err := a.authRepo.GetUserbyUsername(loginData)
+
+	//if failed finding user
+	if err != nil {
+		return false, err
+	}
+	return false, nil
+}
+
+func (a *AuthUsecase) Signin(signin *model.SignUpPayload) (*model.Auth, error) {
 
 	//store signin credential <username> into user model struct
-	loginData := &domain.Auth{
+	loginData := &model.Auth{
 		Username: signin.Username,
 	}
 
 	//find signin credential in user table db
-	res, err := a.authRepo.Signin(loginData)
+	res, err := a.authRepo.GetUserbyUsername(loginData)
 
 	//if failed finding user
 	if err != nil {
@@ -46,7 +63,7 @@ func (a *AuthEntity) Signin(signin *domain.SignUpPayload) (*domain.Auth, error) 
 	return utils.HideCredential(res), nil
 }
 
-func (a *AuthEntity) Signup(signup *domain.SignUpPayload) (*domain.Auth, error) {
+func (a *AuthUsecase) Signup(signup *model.SignUpPayload) (*model.Auth, error) {
 
 	uuID, err := uuid.NewRandom()
 
@@ -56,7 +73,7 @@ func (a *AuthEntity) Signup(signup *domain.SignUpPayload) (*domain.Auth, error) 
 
 	salt := utils.GenerateRandomSalt(16)
 
-	udata := &domain.Auth{
+	udata := &model.Auth{
 		Id:       uuID,
 		Username: signup.Username,
 		Password: utils.HashPassword(signup.Password, salt),

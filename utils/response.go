@@ -3,7 +3,7 @@ package utils
 import (
 	"time"
 
-	"github.com/creamyshit/gologin/domain"
+	"github.com/creamyshit/gologin/src/model"
 
 	"github.com/gofiber/fiber/v2"
 )
@@ -29,7 +29,7 @@ func subtractTime(time1, time2 time.Time) float64 {
 	return diff
 }
 
-func HideCredential(a *domain.Auth) *domain.Auth {
+func HideCredential(a *model.Auth) *model.Auth {
 	a.Password = ""
 	a.Salt = nil
 	return a

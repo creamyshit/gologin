@@ -2,6 +2,7 @@ package repository
 
 import (
 	"github.com/creamyshit/gologin/domain"
+	"github.com/creamyshit/gologin/src/model"
 	"gorm.io/gorm"
 )
 
@@ -15,7 +16,7 @@ func NewAuthRepository(conn *gorm.DB) domain.AuthRepository {
 	}
 }
 
-func (m *AuthRepository) Signup(a *domain.Auth) (*domain.Auth, error) {
+func (m *AuthRepository) Signup(a *model.Auth) (*model.Auth, error) {
 
 	if err := m.conn.Create(&a); err != nil {
 		return nil, err.Error
@@ -24,7 +25,7 @@ func (m *AuthRepository) Signup(a *domain.Auth) (*domain.Auth, error) {
 	return a, nil
 }
 
-func (m *AuthRepository) Signin(a *domain.Auth) (*domain.Auth, error) {
+func (m *AuthRepository) GetUserbyUsername(a *model.Auth) (*model.Auth, error) {
 
 	if err := m.conn.Where("username = ?", a.Username).First(&a); err != nil {
 		return nil, err.Error

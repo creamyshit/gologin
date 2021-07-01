@@ -1,27 +1,14 @@
 package domain
 
-import (
-	"github.com/google/uuid"
-)
+import "github.com/creamyshit/gologin/src/model"
 
-type Auth struct {
-	Id       uuid.UUID `gorm:"type:uuid;primary_key"`
-	Username string    `gorm:"type:character(24);not null"`
-	Password string    `gorm:"type:varchar(100);not null"`
-	Salt     []byte    `gorm:"type:bytea;not null"`
+type AuthUsecase interface {
+	Signup(*model.SignUpPayload) (*model.Auth, error)
+	Signin(*model.SignUpPayload) (*model.Auth, error)
+	ForgotPassword(*model.ForgotPasswordPayload) (bool, error)
 }
 
 type AuthRepository interface {
-	Signup(a *Auth) (*Auth, error)
-	Signin(a *Auth) (*Auth, error)
-}
-
-type SignUpPayload struct {
-	Username string `validate:"required,min=5,max=25"`
-	Password string `validate:"required,min=8,max=25"`
-}
-
-type AuthEntity interface {
-	Signup(*SignUpPayload) (*Auth, error)
-	Signin(*SignUpPayload) (*Auth, error)
+	Signup(a *model.Auth) (*model.Auth, error)
+	GetUserbyUsername(a *model.Auth) (*model.Auth, error)
 }
